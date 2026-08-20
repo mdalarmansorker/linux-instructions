@@ -13,8 +13,11 @@ By default, Ubuntu uses a system called GVFS (GNOME Virtual file system) to mana
 Before doing anything, you need the unique ID (UUID) and the file system type of the partition you want to mount[cite: 1].
 
 Open your terminal and run:
+
 bash
+```
 lsblk -f
+```
 
 Look at the output and note down[cite: 1]:
 1. **UUID**: A long string of characters (e.g., `c0cdd506-bf9f-4687-9941-74a436babad0`)[cite: 1].
@@ -26,8 +29,11 @@ Look at the output and note down[cite: 1]:
 The system needs a permanent folder to attach the drive to[cite: 1]. It is best practice to put system-level mounts in the `/mnt` directory to avoid conflicts with the UI[cite: 1].
 
 Create a folder for your drive (e.g., for a "codes" partition)[cite: 1]:
+
 bash
+```
 sudo mkdir -p /mnt/codes
+```
 
 
 ---
@@ -36,24 +42,36 @@ sudo mkdir -p /mnt/codes
 The `/etc/fstab` (File Systems Table) dictates what happens during boot[cite: 1]. 
 
 1. **Backup the file first** (Crucial safety step)[cite: 1]:
+   
    bash
+   ```
    sudo cp /etc/fstab /etc/fstab.bak
+   ```
    
-2. **Open the file in a text editor:**[cite: 1]
+3. **Open the file in a text editor:**[cite: 1]
+   
    bash
+   ```
    sudo nano /etc/fstab
+   ```
    
-3. **Add your mount instruction at the very bottom:**[cite: 1]
+5. **Add your mount instruction at the very bottom:**[cite: 1]
    *Important: Do not copy/paste from web browsers if it carries hidden formatting. Use the `TAB` key on your keyboard to create the spaces between these words to avoid `mount: can't find...` errors.*[cite: 1]
 
    **Example for an ext4 (Linux) partition:**[cite: 1]
+   
    text
+   ```
    UUID=c0cdd506-bf9f-4687-9941-74a436babad0	/mnt/codes	ext4	defaults,x-gvfs-show	0	2
+   ```
    
 
    **Example for an NTFS (Windows) partition:**[cite: 1]
+   
    text
+   ```
    UUID=86CC7FCCCC7FB551	/mnt/arman	ntfs-3g	defaults,x-gvfs-show	0	2
+   ```
    
 
 ### Understanding the Parameters
@@ -71,12 +89,18 @@ The `/etc/fstab` (File Systems Table) dictates what happens during boot[cite: 1]
 Never restart your laptop without testing the `fstab` file first[cite: 1]. If there is a typo, your laptop might fail to boot[cite: 1].
 
 1. **Reload the system manager** (so it detects your file changes)[cite: 1]:
-   bash
-   sudo systemctl daemon-reload
    
-2. **Mount all drives in the fstab file:**[cite: 1]
    bash
+   ```
+   sudo systemctl daemon-reload
+   ```
+   
+3. **Mount all drives in the fstab file:**[cite: 1]
+   
+   bash
+   ```
    sudo mount -a
+   ```
    
 
 **Success Check:** If the `sudo mount -a` command returns a blank line with absolutely no errors, your configuration is perfect[cite: 1]. Your drive is now mounted and will automatically connect every time you turn the laptop on[cite: 1].
@@ -103,8 +127,11 @@ If you want the drive to show up in the lower left sidebar alongside your other 
 
 ### For ext4 Drives: Taking Ownership
 Because the system mounted the drive as the root user, you might not have permission to write files to it yet[cite: 1]. Run this command to take ownership of your new folder (replace `/mnt/codes` with your actual path)[cite: 1]:
+
 bash
+```
 sudo chown -R $USER:$USER /mnt/codes
+```
 
 
 ### For NTFS Drives: The Fast Startup Warning
