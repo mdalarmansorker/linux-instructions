@@ -67,7 +67,7 @@ The `/etc/fstab` (File Systems Table) dictates what happens during boot.
    **Example for an ext4 (Linux) partition:**
    
    ```text
-   UUID=c0cdd506-bf9f-4687-9941-74a436babad0 /mnt/codes ext4 defaults,x-gvfs-show 0	2
+   UUID=c0cdd506-bf9f-4687-9941-74a436babad0 /mnt/codes ext4 defaults,x-gvfs-show 0 2
    ```
    
 
