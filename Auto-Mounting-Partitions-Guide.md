@@ -1,11 +1,11 @@
 # Comprehensive Guide: Auto-Mounting Partitions in Ubuntu 26.04 LTS
 
 ## Why Do We Need This?
-By default, Ubuntu uses a system called GVFS (GNOME Virtual file system) to manage secondary hard drives and partitions. This creates a "lazy mount" or "mount-on-demand" scenario. The system knows the drive exists and shows it in your file manager, but it doesn't actually connect the file system until you physically click on it.
+By default, Ubuntu uses a system called GVFS (GNOME Virtual file system) to manage secondary hard drives and partitions. This creates a "lazy mount" or "mount-on-demand" scenario. The system knows [...]
 
-**The Problem:** If you have background applications, development environments, docker containers, or symbolic links that rely on files inside that partition, they will fail and throw errors on a fresh boot. They try to access a path (like your codes or projects) that hasn't been "woken up" yet.
+**The Problem:** If you have background applications, development environments, docker containers, or symbolic links that rely on files inside that partition, they will fail and throw errors on a f[...]
 
-**The Solution:** We bypass the GUI and configure a system-level "hard mount" using the `/etc/fstab` file. This forces the laptop to mount the partition at the kernel level during the boot sequence—long before your desktop even loads. 
+**The Solution:** We bypass the GUI and configure a system-level "hard mount" using the `/etc/fstab` file. This forces the laptop to mount the partition at the kernel level during the boot sequence[...]
 
 ---
 
@@ -22,7 +22,7 @@ lsblk -f
 *   `-f` (File System Flag): Modifies the command to reveal the format type and the unique UUID strings for each partition.
 
 Look at the output and note down:
-1. **UUID**: A long string of characters (e.g., `c0cdd506-bf9f-4687-9941-74a436babad0`).
+1. **UUID**: A long string of characters (e.g., `<drive-uuid>`).
 2. **FSTYPE**: Usually `ext4` (Linux native) or `ntfs` (Windows).
 
 ---
@@ -30,10 +30,10 @@ Look at the output and note down:
 ## Step 2: Create a Permanent Mount Point
 The system needs a permanent folder to attach the drive to. It is best practice to put system-level mounts in the `/mnt` directory to avoid conflicts with the UI.
 
-Create a folder for your drive (e.g., for a "codes" partition):
+Create a folder for your drive (e.g., for a "codes" partition — use your preferred name as `<drive-name>`):
 
 ```bash
-sudo mkdir -p /mnt/codes
+sudo mkdir -p /mnt/<drive-name>
 ```
 **Command Breakdown:**
 *   `sudo` (Superuser DO): Runs the command with root (administrator) privileges, which is required to modify system folders like `/mnt`.
@@ -67,14 +67,14 @@ The `/etc/fstab` (File Systems Table) dictates what happens during boot.
    **Example for an ext4 (Linux) partition:**
    
    ```text
-   UUID=c0cdd506-bf9f-4687-9941-74a436babad0 /mnt/codes ext4 defaults,x-gvfs-show 0 2
+   UUID=<drive-uuid> /mnt/<drive-name> ext4 defaults,x-gvfs-show 0 2
    ```
    
 
    **Example for an NTFS (Windows) partition:**
    
    ```text
-   UUID=86CC7FCCCC7FB551 /mnt/arman ntfs-3g defaults,x-gvfs-show 0 2
+   UUID=<drive-uuid> /mnt/<drive-name> ntfs-3g defaults,x-gvfs-show 0 2
    ```
    
 
@@ -83,7 +83,7 @@ The `/etc/fstab` (File Systems Table) dictates what happens during boot.
 *   **Path (`/mnt/...`)**: Where the drive will be accessed.
 *   **Type (`ext4` or `ntfs-3g`)**: The file system format. *Note: Always use `ntfs-3g` for Windows drives to ensure you get read/write permissions.*
 *   **`defaults`**: A shortcut that applies standard settings (Read/Write access, execute permissions, and auto-mount on boot).
-*   **`x-gvfs-show`**: A special flag that forces the Ubuntu File Manager to display this system-mounted drive in the left sidebar as a regular drive icon. Make sure there are NO spaces around the comma separating it from `defaults`.
+*   **`x-gvfs-show`**: A special flag that forces the Ubuntu File Manager to display this system-mounted drive in the left sidebar as a regular drive icon. Make sure there are NO spaces around the flag.
 *   **`0` (Dump):** Tells legacy backup utilities (like the Unix `dump` tool) to ignore this drive.
 *   **`2` (Pass/Check):** Tells the system to run a disk error check (`fsck`) on this drive *after* checking the main OS drive during boot. (Use `0` here instead for NTFS drives).
 
@@ -111,38 +111,38 @@ Never restart your laptop without testing the `fstab` file first. If there is a 
    *   `-a` (All Flag): Tells the system to immediately mount every drive listed in the `/etc/fstab` file that isn't already mounted.
    
 
-**Success Check:** If the `sudo mount -a` command returns a blank line with absolutely no errors, your configuration is perfect. Your drive is now mounted and will automatically connect every time you turn the laptop on.
+**Success Check:** If the `sudo mount -a` command returns a blank line with absolutely no errors, your configuration is perfect. Your drive is now mounted and will automatically connect every tim[...]
 
 ---
 
 ## Step 5: Finding the Drive in the File Manager (Modern Ubuntu / Custom Themes)
-System-level mounts placed in `/mnt` are often hidden by the file manager by default. In modern Ubuntu versions or when using custom UI themes, the standard "Other Locations" button might be missing entirely.
+System-level mounts placed in `/mnt` are often hidden by the file manager by default. In modern Ubuntu versions or when using custom UI themes, the standard "Other Locations" button might be miss[...]
 
 Here is how to access and pin your drive:
 
 ### Option 1: The Direct Path Trick
 1. Open the **Files** app.
 2. Press **`Ctrl + L`** on your keyboard. This changes the top navigation bar into a direct text input.
-3. Type the exact path of your mount point (e.g., `/mnt/codes`) and press **Enter**.
+3. Type the exact path of your mount point (e.g., `/mnt/<drive-name>`) and press **Enter**.
 4. *To pin it permanently:* Once inside the folder, press **`Ctrl + D`**. This will bookmark the folder so it stays visible on your left sidebar forever.
 
 ### Option 2: The GUI Drive Method
-If you want the drive to show up in the lower left sidebar alongside your other drives (instead of as a folder bookmark), ensure you added the `,x-gvfs-show` flag to the `defaults` section in your `fstab` file as demonstrated in Step 3. 
+If you want the drive to show up in the lower left sidebar alongside your other drives (instead of as a folder bookmark), ensure you added the `,x-gvfs-show` flag to the `defaults` section in your fstab entry.
 
 ---
 
 ## Step 6: Post-Mount Setup
 
 ### For ext4 Drives: Taking Ownership
-Because the system mounted the drive as the root user, you might not have permission to write files to it yet. Run this command to take ownership of your new folder (replace `/mnt/codes` with your actual path):
+Because the system mounted the drive as the root user, you might not have permission to write files to it yet. Run this command to take ownership of your new folder (replace `/mnt/<drive-name>` with your mount path):
 
 ```bash
-sudo chown -R $USER:$USER /mnt/codes
+sudo chown -R $USER:$USER /mnt/<drive-name>
 ```
 **Command Breakdown:**
 *   `chown` (Change Owner): Transfers the ownership of a file or directory from one user to another.
 *   `-R` (Recursive Flag): Applies the ownership change to the main folder and *every single file and sub-folder* inside of it.
-*   `$USER:$USER`: These are environment variables. Instead of typing your specific username, this automatically inserts your currently logged-in username and primary user group (e.g., changing ownership to `arman:arman`).
+*   `$USER:$USER`: These are environment variables. Instead of typing your specific username, this automatically inserts your currently logged-in username and primary user group (e.g., changing ownership to the active user).
 
 ### For NTFS Drives: The Fast Startup Warning
-If you are dual-booting with Windows and your NTFS drive is mounted as "Read-Only" despite using `ntfs-3g`, it is caused by Windows "Fast Startup". Windows hibernates the drive to boot faster, locking it. You must boot into Windows, go to Power Options, and disable "Turn on fast startup" to get write access in Ubuntu.
+If you are dual-booting with Windows and your NTFS drive is mounted as "Read-Only" despite using `ntfs-3g`, it is caused by Windows "Fast Startup". Windows hibernates the drive to boot faster, lo...
