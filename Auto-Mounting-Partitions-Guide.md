@@ -74,7 +74,7 @@ The `/etc/fstab` (File Systems Table) dictates what happens during boot.
    **Example for an NTFS (Windows) partition:**
    
    ```text
-   UUID=86CC7FCCCC7FB551 /mnt/arman	ntfs-3g defaults,x-gvfs-show 0 2
+   UUID=86CC7FCCCC7FB551 /mnt/arman ntfs-3g defaults,x-gvfs-show 0 2
    ```
    
 
