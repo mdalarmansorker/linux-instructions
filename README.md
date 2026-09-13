@@ -6,11 +6,13 @@ This folder contains practical Linux setup and troubleshooting notes.
 
 - [Auto-Mounting Partitions Guide](./Auto-Mounting-Partitions-Guide.md) — configure Ubuntu to auto-mount a drive at boot using /etc/fstab.
 - [Installing Applications on Ubuntu 26.04 LTS](./Installing-Applications-Ubuntu.md) — comprehensive guide covering .deb, AppImage, .sh, archives, APT, Snap, and Flatpak installation methods.
+- [Git Multiple Account Setup on Linux/Ubuntu](./Git-Multiple-Accounts-Setup-Linux-Ubuntu.md) — configure separate SSH keys, host aliases, and repository identities for multiple GitHub accounts.
 
 ## Quick Index
 
 - [Auto-Mounting Partitions Guide](./Auto-Mounting-Partitions-Guide.md)
 - [Installing Applications on Ubuntu 26.04 LTS](./Installing-Applications-Ubuntu.md)
+- [Git Multiple Account Setup on Linux/Ubuntu](./Git-Multiple-Accounts-Setup-Linux-Ubuntu.md)
 
 ## Notes
 
