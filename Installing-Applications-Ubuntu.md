@@ -123,3 +123,49 @@ flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flat
 ```bash
 flatpak install flathub com.developer.AppName
 ```
+
+---
+
+## 8. App Center or Ubuntu Software (Graphical Method)
+The App Center is the easiest method when the application is available as an APT or Snap package.
+
+**How to install:**
+1. Open **App Center** from the application menu.
+2. Search for the application.
+3. Select the application and click **Install**.
+4. Enter your password when prompted.
+
+You can use the **Source** or package-format selector on the application page when more than one format is available.
+
+---
+
+## 9. Personal Package Archives (PPAs)
+Some developers provide a PPA when their software is not available in the standard Ubuntu repositories. PPAs can provide newer versions, but only add one when you trust its maintainer.
+
+**How to install from a PPA:**
+```bash
+sudo add-apt-repository ppa:maintainer/ppa
+sudo apt update
+sudo apt install package-name
+```
+
+**How to remove a PPA:**
+```bash
+sudo add-apt-repository --remove ppa:maintainer/ppa
+sudo apt update
+```
+
+Check the application's official documentation for the exact PPA address and package name.
+
+---
+
+## 10. Official Vendor APT Repositories
+Companies such as Google, Microsoft, and Docker may provide their own APT repository instead of a standalone `.deb` file. This allows the application to receive updates through APT.
+
+Use the installation instructions from the vendor's official website. A typical workflow is:
+```bash
+sudo apt update
+sudo apt install package-name
+```
+
+Do not add an APT repository from an untrusted source. Repository setup commands vary by vendor and may require adding a signing key and a file under `/etc/apt/sources.list.d/`.
